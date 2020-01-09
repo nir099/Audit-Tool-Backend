@@ -14,7 +14,7 @@ script:
   - npm install -g serverless
   - npm install
   - npm run test
-  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then sonar-scanner; fi' # sonar only on non-PRs
+  - sonar-scanner
 
 deploy:
   provider: script
