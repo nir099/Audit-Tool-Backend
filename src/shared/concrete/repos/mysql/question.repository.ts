@@ -1,17 +1,23 @@
 import { initMysql } from './connection.manager';
-import { mapDbItems, questionMapper } from './dbMapper';
 import { IQuestionRepository } from '../../../abstract/repos/question.repository';
-
+import { injectable } from 'inversify';
+import { Question as QuestionEntity } from './entity/question';
+import { mapDbItems, questionMapper } from './dbMapper';
+@injectable()
 export class MySQLQuestionRepository implements IQuestionRepository {
   async getQuestionsByKnowledgeAreaId(
-    _knowledgeAreaId: number,
+    knowledgeAreaId: number,
   ): Promise<Array<import('../../../models/question').Question>> {
     let connection: any;
     try {
       connection = await initMysql();
-      const result = await connection.query(
-        `CALL GetQuestionsByKnowledgeAreaId(${_knowledgeAreaId})`,
-      );
+      const result = await connection
+        .getRepository(QuestionEntity)
+        .createQueryBuilder('question')
+        .where('question.knowledgeAreaId = :knowledgeAreaId', {
+          knowledgeAreaId,
+        })
+        .getRawMany();
       return mapDbItems(result, questionMapper);
     } catch (err) {
       throw err;

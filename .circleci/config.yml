@@ -1,0 +1,62 @@
+jobs:
+  build:
+    docker:
+      - image: 'node:latest'
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run:
+          name: Install Serverless CLI and dependencies
+          command: |
+            npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      - run: npm run test
+
+  deploy:
+    docker:
+      - image: 'node:latest'
+    steps:
+      - checkout
+      - run:
+          name: Deploy Code to AWS
+          command: |
+            npm i serverless-webpack
+            npm i -g serverless
+            npm install
+            npm run deploy
+
+  sonar:
+    docker:
+      - image: 'node:latest'
+    steps:
+      - checkout
+      - sonarcloud/scan
+
+orbs:
+  sonarcloud: sonarsource/sonarcloud@1.0.1
+
+version: 2.1
+workflows:
+  main:
+    jobs:
+      - sonar:
+          context: SonarCloud
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master

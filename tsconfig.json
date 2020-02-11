@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "lib": ["es2015", "es2017"],
-    "target": "es2017",
+    "target": "es6",
     "types": ["node", "jest"],
     "module": "commonjs",
     "moduleResolution": "node",
@@ -23,9 +23,10 @@
       "@util/*": ["shared/util/*"],
       "@models/*": ["shared/models/*"],
       "@products/*": ["products/*"],
+      "@questions/*": ["questions/*"],
       "@root/*": ["../*"]
     }
   },
   "include": ["./src/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
 }

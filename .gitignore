@@ -8,3 +8,5 @@ secrets.json
 .serverless
 .env
 .webpack/
+.env.development
+

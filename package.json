@@ -5,8 +5,9 @@
   "main": "handler.js",
   "scripts": {
     "test": "jest",
-    "offline": "serverless offline",
+    "offline:local": "serverless offline --env=dev",
     "deploy": "serverless deploy",
+    "deploy:local": "serverless deploy --env=prod",
     "lint": "tslint --project .",
     "lint:fix": "tslint --project . --fix",
     "prettier:fix": "prettier --write \"src/**/*.*\""
@@ -18,13 +19,14 @@
     "mysql": "^2.17.1",
     "reflect-metadata": "^0.1.13",
     "source-map-support": "^0.5.10",
-    "typeorm": "^0.2.21"
+    "tslint": "^5.20.1",
+    "typeorm": "^0.2.22"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.17",
     "@types/jest": "^24.0.23",
     "@types/node": "^8.0.29",
-    "aws-sdk": "^2.596.0",
+    "aws-sdk": "^2.597.0",
     "fork-ts-checker-webpack-plugin": "^3.0.1",
     "husky": "^3.1.0",
     "jest": "^24.9.0",
@@ -39,6 +41,9 @@
     "ts-node": "3.3.0",
     "ts-sinon": "^1.0.24",
     "tsconfig-paths-webpack-plugin": "^3.2.0",
+    "tslint": "^5.20.1",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.1.0",
     "typescript": "^3.3.3333",
     "webpack": "^4.29.0",
     "webpack-node-externals": "^1.7.2"

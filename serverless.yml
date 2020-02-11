@@ -16,6 +16,7 @@ provider:
   runtime: nodejs12.x
   region: ap-south-1
   stage: ${opt:stage, 'dev'}
+  timeout: 12
   environment:
     NODE_ENV: ${env:NODE_ENV}
     DB_NAME: ${env:DB_NAME}
@@ -30,21 +31,81 @@ functions:
     events:
       - http:
           method: get
-          path: products
-          cors: true
+          # get products by user id
+          path: products/user/{id}
+          integration: lambda
+          authorizer:
+            name: authorizer
+            arn: ${env:ARN}
       - http:
           method: get
           path: products/{id}
-          cors: true
+          integration: lambda
+          authorizer:
+            name: authorizer
+            arn: ${env:ARN}
       - http:
           method: get
           path: products/{id}/phases
-          cors: true
+          integration: lambda
+          authorizer:
+            name: authorizer
+            arn: ${env:ARN}
       - http:
           method: get
+          # return the product by product_phase_id
           path: products/productPhases/{id}
-          cors: true
+          integration: lambda
+          authorizer:
+            name: authorizer
+            arn: ${env:ARN}
       - http:
           method: get
           path: productPhase/{id}/knowledgeAreas
-          cors: true
+          integration: lambda
+          authorizer:
+            name: authorizer
+            arn: ${env:ARN}
+      - http:
+          method: get
+          path: knowledgeAreas/{id}/questions
+          integration: lambda
+          authorizer:
+            name: authorizer
+            arn: ${env:ARN}
+      - http:
+          method: get
+          path: product/{id}/questions/{qid}/evidence
+          integration: lambda
+          authorizer:
+            name: authorizer
+            arn: ${env:ARN}
+      - http:
+          method: post
+          path: question/{id}/evidence
+          integration: lambda
+          authorizer:
+            name: authorizer
+            arn: ${env:ARN}
+      - http:
+          method: post
+          path: authTrigger/user
+      - http:
+          method: put
+          path: question/{id}/evidence/{eid}
+          integration: lambda
+          authorizer:
+            name: authorizer
+            arn: ${env:ARN}
+      - http:
+          method: get
+          path: user/email/{id}
+      - http:
+          method: get
+          path: user/product/{id}
+          integration: lambda
+          authorizer:
+            name: authorizer
+            arn: ${env:ARN}
+  auth-token-trigger:
+    handler: src/functions/auth-token-trigger.authToken

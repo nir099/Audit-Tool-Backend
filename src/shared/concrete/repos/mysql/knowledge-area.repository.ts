@@ -3,6 +3,7 @@ import { initMysql } from './connection.manager';
 import { mapDbItems, knowledgeAreaMapper } from './dbMapper';
 import { KnowledgeArea } from '../../../models/knowledge-area';
 import { injectable } from 'inversify';
+import { Phase as PhaseEntity } from './entity/phase';
 
 @injectable()
 export class MySQLKnowledgeAreaRepository implements IKnowledgeAreaRepository {
@@ -12,10 +13,14 @@ export class MySQLKnowledgeAreaRepository implements IKnowledgeAreaRepository {
     let connection: any;
     try {
       connection = await initMysql();
-      const result = await connection.query(
-        `CALL GetKnowledgeAreasByProductPhaseId(${_productPhaseId})`,
-      );
-      return mapDbItems(result, knowledgeAreaMapper);
+      const results = await connection
+        .getRepository(PhaseEntity)
+        .createQueryBuilder('phase')
+        .leftJoinAndSelect('phase.productphases', 'productphase')
+        .leftJoinAndSelect('phase.knowledgeareas', 'knowledgearea')
+        .where('productphase.Id = :Id', { Id: _productPhaseId })
+        .getRawMany();
+      return mapDbItems(results, knowledgeAreaMapper);
     } catch (err) {
       throw err;
     } finally {

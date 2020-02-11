@@ -4,4 +4,5 @@ export class Orgnization extends BaseEntity {
   name!: string;
   email!: string;
   createdDate!: Date;
+  phoneNumber!: string;
 }
